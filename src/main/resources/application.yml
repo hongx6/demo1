@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/embeddingdb
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/chatdb
+    username: postgres
+    password: 123456
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 20
+
+  ai:
+    openai:
+      api-key: //you apikey
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: qwen3.8-27b
+      embedding:
+        options:
+          model: qwen3.7-text-embedding-flash
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024    # ← 按 embedding 真实维度改
+        initialize-schema: true
+
+app:
+  chat:
+    # 系统提示词 - 定义AI助手的行为准则
+    system-prompt: "你是一个友好、专业农业知识问答的助手，请用简洁清晰的语言回答用户的问题。"
+    # 最大保留的对话轮数（一对 = user + assistant）
+    max-context-pairs: 20
+  rag:
+    top-k: 4
+    similarity-threshold: 0.25
+    chunk-size: 800
+    min-chunk-size-chars: 350
+    min-chunk-length-to-embed: 20
+    max-num-chunks: 5000
